@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한문 플래시카드</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <h1>漢文 플래시카드</h1>
+    <div class="tabs">
+      <button class="tab-btn active" data-mode="hanja">한자</button>
+      <button class="tab-btn" data-mode="saja">사자성어</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="status-bar">
+      <div class="card-count" id="cardCount"></div>
+      <div class="btn-group">
+        <button class="icon-btn" id="addBtn" title="카드 추가">+</button>
+        <button class="icon-btn danger" id="resetBtn" title="초기화">↺</button>
+      </div>
+    </div>
+
+    <div class="card-area" id="cardArea">
+      <div class="card-container" id="cardContainer">
+        <div class="card-face card-front" id="cardFront">
+          <div class="card-main-text" id="mainText"></div>
+          <div class="card-sub" id="subText"></div>
+          <div class="flip-hint">클릭하여 뒤집기</div>
+        </div>
+        <div class="card-face card-back" id="cardBack">
+          <div class="card-reading" id="readingText"></div>
+          <div class="card-meaning" id="meaningText"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">📖</div>
+      <p>카드가 없습니다</p>
+      <div class="sub">+ 버튼으로 새 카드를 추가하세요</div>
+    </div>
+
+    <div class="quiz-controls" id="quizControls">
+      <button class="quiz-btn o-btn" id="oBtn">O (암기 완료)</button>
+      <button class="quiz-btn x-btn" id="xBtn">X (다시 보기)</button>
+    </div>
+
+    <div class="nav-controls" id="navControls">
+      <button class="nav-btn" id="prevBtn">←</button>
+      <div class="page-indicator" id="pageIndicator"></div>
+      <button class="nav-btn" id="nextBtn">→</button>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h2 id="modalTitle">카드 추가</h2>
+      <div id="modalFields"></div>
+      <div class="modal-buttons">
+        <button class="modal-btn cancel" id="modalCancel">취소</button>
+        <button class="modal-btn confirm" id="modalConfirm">추가</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

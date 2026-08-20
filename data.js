@@ -1,0 +1,40 @@
+const DEFAULT_HANJA = [
+  { hanja: "學", reading: "학", meaning: "배울 학" },
+  { hanja: "問", reading: "문", meaning: "물을 문" },
+  { hanja: "知", reading: "지", meaning: "알 지" },
+  { hanja: "識", reading: "식", meaning: "알 식" },
+  { hanja: "孝", reading: "효", meaning: "효도 효" },
+  { hanja: "仁", reading: "인", meaning: "어질 인" },
+  { hanja: "禮", reading: "예", meaning: "예절 예" },
+  { hanja: "信", reading: "신", meaning: "믿음 신" },
+  { hanja: "勤", reading: "근", meaning: "부지런 근" },
+  { hanja: "廉", reading: "염", meaning: "마를 염" },
+  { hanja: "正", reading: "정", meaning: "바를 정" },
+  { hanja: "義", reading: "의", meaning: "옳을 의" },
+  { hanja: "自", reading: "자", meaning: "스스로 자" },
+  { hanja: "律", reading: "율", meaning: "법 율" },
+  { hanja: "感", reading: "감", meaning: "느낄 감" },
+  { hanja: "謝", reading: "사", meaning: "사례할 사" },
+  { hanja: "忍", reading: "인", meaning: "참을 인" },
+  { hanja: "勇", reading: "용", meaning: "용기 용" },
+  { hanja: "夢", reading: "몽", meaning: "꿈 몽" },
+  { hanja: "和", reading: "화", meaning: "화할 화" }
+];
+
+const DEFAULT_SAJA = [
+  { idiom: "有備無患", reading: "유비무환", meaning: "미리 준비하면 화가 없다" },
+  { idiom: "一日三秋", reading: "일일삼추", meaning: "하루가 세 가을 같다 (그리움이 큼)" },
+  { idiom: "臥薪嘗膽", reading: "와신상담", meaning: "괴로움을 견디며 뜻을 펼침" },
+  { idiom: "水落石出", reading: "수락석출", meaning: "진실이 드러남" },
+  { idiom: "刻舟求劍", reading: "각주구검", meaning: "변화를 외면하고 옛것을 고집" },
+  { idiom: "虎頭蛇尾", reading: "호두사미", meaning: "처음엔 크게 하다 끝은 작게" },
+  { idiom: "寒心之感", reading: "한심지감", meaning: "몹시 서운하고 실망함" },
+  { idiom: "難中有愛", reading: "난중유애", meaning: "어려움 속에 사랑이 있다" },
+  { idiom: "塵裏金瓶", reading: "진리금병", meaning: "세상 속의 고귀한 존재" },
+  { idiom: "夢中之夢", reading: "몽중몽", meaning: "꿈속의 꿈 (허무함)" },
+  { idiom: "竹馬之友", reading: "축마지우", meaning: "어릴 때부터의 친구" },
+  { idiom: "事必歸正", reading: "사필귀정", meaning: "옳은 것으로 돌아간다" },
+  { idiom: "不屈不撓", reading: "불굴불요", meaning: "굽히지 않고 꺾이지 않음" },
+  { idiom: "任重道遠", reading: "임중도遠", meaning: "중한 일을 맡아 갈 길이 멀다" },
+  { idiom: "一石二鳥", reading: "일석이조", meaning: "하나로 둘을 취함" }
+];
