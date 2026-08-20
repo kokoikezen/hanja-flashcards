@@ -22,19 +22,21 @@ const DEFAULT_HANJA = [
 ];
 
 const DEFAULT_SAJA = [
-  { idiom: "有備無患", reading: "유비무환", meaning: "미리 준비하면 화가 없다" },
-  { idiom: "一日三秋", reading: "일일삼추", meaning: "하루가 세 가을 같다 (그리움이 큼)" },
-  { idiom: "臥薪嘗膽", reading: "와신상담", meaning: "괴로움을 견디며 뜻을 펼침" },
-  { idiom: "水落石出", reading: "수락석출", meaning: "진실이 드러남" },
-  { idiom: "刻舟求劍", reading: "각주구검", meaning: "변화를 외면하고 옛것을 고집" },
-  { idiom: "虎頭蛇尾", reading: "호두사미", meaning: "처음엔 크게 하다 끝은 작게" },
-  { idiom: "寒心之感", reading: "한심지감", meaning: "몹시 서운하고 실망함" },
-  { idiom: "難中有愛", reading: "난중유애", meaning: "어려움 속에 사랑이 있다" },
-  { idiom: "塵裏金瓶", reading: "진리금병", meaning: "세상 속의 고귀한 존재" },
-  { idiom: "夢中之夢", reading: "몽중몽", meaning: "꿈속의 꿈 (허무함)" },
-  { idiom: "竹馬之友", reading: "축마지우", meaning: "어릴 때부터의 친구" },
-  { idiom: "事必歸正", reading: "사필귀정", meaning: "옳은 것으로 돌아간다" },
-  { idiom: "不屈不撓", reading: "불굴불요", meaning: "굽히지 않고 꺾이지 않음" },
-  { idiom: "任重道遠", reading: "임중도遠", meaning: "중한 일을 맡아 갈 길이 멀다" },
-  { idiom: "一石二鳥", reading: "일석이조", meaning: "하나로 둘을 취함" }
+  { idiom: "知音", reading: "지음", meaning: "백아(伯牙)와 종자기(鍾子期) 사이의 고사로부터 (거문고) 소리를 알아 듣는다는 뜻에서 유래." },
+  { idiom: "水魚之交", reading: "수어지교", meaning: "고기와 물과의 관계처럼 떨어질 수 없는 특별한 친분" },
+  { idiom: "莫逆之友", reading: "막역지우", meaning: "서로 거역하지 아니하는 친구" },
+  { idiom: "金蘭之契", reading: "금란지계", meaning: "금이나 난초와 같이 귀하고 향기로움을 풍기는 친구의 사이의 맺음(사귐)" },
+  { idiom: "管鮑之交", reading: "관포지교", meaning: "관중과 포숙의 사귐과 같은 친구 사이의 허물없는 교재" },
+  { idiom: "竹馬故友", reading: "죽마고우", meaning: "어릴 때, 대나무말을 타고 놀며 같이 자란 친구" },
+  { idiom: "刎頸之交", reading: "문경지교", meaning: "대신 목을 내주어도 좋을 정도로 친한 친구의 사귐" },
+  { idiom: "桑田碧海", reading: "상전벽해", meaning: "뽕나무밭이 푸른 바다가 됨" },
+  { idiom: "天旋地轉", reading: "천선지전", meaning: "세상일이 크게 변함" },
+  { idiom: "吳越同舟", reading: "오월동주", meaning: "서로 원수의 사이인 오나라 사람과 월나라 사람이 같은 배를 탐" },
+  { idiom: "漁父之利", reading: "어부지리", meaning: "조개와 도요새가 서로 버티는 통에 어부가 둘을 다 잡아 이득을 봄" },
+  { idiom: "犬兎之爭", reading: "견토지쟁", meaning: "개와 토끼가 싸우다 지쳐서 둘다 쓰러져 숨져 있는 것을 지나가던 농부가 주워서 이득을 봄" },
+  { idiom: "白眉", reading: "백미", meaning: "마씨 오형제 중에서 가장 재주가 뛰어난 맏이 마량이 눈썹이 희었다는 데서 나온 말" },
+  { idiom: "鐵中錚錚", reading: "철중쟁쟁", meaning: "같은 동아리 가운데 가장 뛰어난 사람을 비유" },
+  { idiom: "高麗公事三日", reading: "고려공사삼일", meaning: "고려의 정책이나 법령은 기껏해야 사흘밖에 가지 못함" },
+  { idiom: "早變夕改", reading: "조변석개", meaning: "아침 저녁으로 뜯어 고침" },
+  { idiom: "朝令暮改", reading: "조령모개", meaning: "아침에 영(명령)을 내리고 저녁에 다시 고침" }
 ];
