@@ -29,6 +29,7 @@
     <div class="card-area" id="cardArea">
       <div class="card-container" id="cardContainer">
         <div class="card-face card-front" id="cardFront">
+          <div class="card-badge" id="cardBadge" style="display:none;">다시 본 카드</div>
           <div class="card-main-text" id="mainText"></div>
           <div class="card-sub" id="subText"></div>
           <div class="flip-hint">클릭하여 뒤집기</div>
@@ -51,12 +52,11 @@
       <button class="quiz-btn x-btn" id="xBtn">X (다시 보기)</button>
     </div>
 
-    <div class="nav-controls" id="navControls">
-      <button class="nav-btn" id="prevBtn">←</button>
-      <div class="page-indicator" id="pageIndicator"></div>
-      <button class="nav-btn" id="nextBtn">→</button>
-    </div>
   </main>
+
+  <footer class="app-footer">
+    <a class="foot-link" href="mailto:example@example.com">피드백 ✉️ example@example.com</a>
+  </footer>
 
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">

@@ -3,6 +3,9 @@
   const STORAGE_KEY_SAJA = "saja_cards_v2";
   const OLD_STORAGE_KEY_SAJA = "saja_cards";
 
+  const USER_KEY_HANJA = "user_hanja";
+  const USER_KEY_SAJA = "user_saja";
+
   const OLD_DEFAULT_SAJA_IDIOMS = [
     "有備無患", "一日三秋", "臥薪嘗膽", "水落石出", "刻舟求劍", "虎頭蛇尾",
     "寒心之感", "難中有愛", "塵裏金瓶", "夢中之夢", "竹馬之友", "事必歸正",
@@ -13,6 +16,7 @@
   let currentIndex = 0;
   let isFlipped = false;
   let cards = [];
+  let reviewCounts = {};
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
@@ -26,14 +30,11 @@
     readingText: $("#readingText"),
     meaningText: $("#meaningText"),
     cardCount: $("#cardCount"),
+    cardBadge: $("#cardBadge"),
     emptyState: $("#emptyState"),
     quizControls: $("#quizControls"),
-    navControls: $("#navControls"),
     oBtn: $("#oBtn"),
     xBtn: $("#xBtn"),
-    prevBtn: $("#prevBtn"),
-    nextBtn: $("#nextBtn"),
-    pageIndicator: $("#pageIndicator"),
     addBtn: $("#addBtn"),
     resetBtn: $("#resetBtn"),
     modalOverlay: $("#modalOverlay"),
@@ -92,6 +93,50 @@
     localStorage.setItem(key, JSON.stringify(data));
   }
 
+  function getUserCards(mode) {
+    const key = mode === "hanja" ? USER_KEY_HANJA : USER_KEY_SAJA;
+    const stored = localStorage.getItem(key);
+    return stored ? JSON.parse(stored) : [];
+  }
+
+  function saveUserCards(mode, data) {
+    const key = mode === "hanja" ? USER_KEY_HANJA : USER_KEY_SAJA;
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+  function addUserCard(mode, card) {
+    const list = getUserCards(mode);
+    const key = mode === "hanja" ? card.hanja : card.idiom;
+    if (!list.some((c) => (mode === "hanja" ? c.hanja : c.idiom) === key)) {
+      list.push(card);
+      saveUserCards(mode, list);
+    }
+  }
+
+  function syncUserCardsFromCurrent(mode) {
+    const isHanja = mode === "hanja";
+    const defaults = new Set(
+      isHanja
+        ? DEFAULT_HANJA.map((c) => c.hanja)
+        : DEFAULT_SAJA.map((c) => c.idiom)
+    );
+
+    const userList = getUserCards(mode);
+    const userKeys = new Set(
+      userList.map((c) => (isHanja ? c.hanja : c.idiom))
+    );
+
+    cards.forEach((c) => {
+      const key = isHanja ? c.hanja : c.idiom;
+      if (!defaults.has(key) && !userKeys.has(key)) {
+        userList.push(c);
+        userKeys.add(key);
+      }
+    });
+
+    saveUserCards(mode, userList);
+  }
+
   function shuffleArray(arr) {
     const a = [...arr];
     for (let i = a.length - 1; i > 0; i--) {
@@ -110,7 +155,6 @@
   function setLoading() {
     el.cardArea.style.display = "none";
     el.quizControls.style.display = "none";
-    el.navControls.style.display = "none";
     el.emptyState.style.display = "block";
     el.emptyState.querySelector(".empty-icon").textContent = "⏳";
     el.emptyState.querySelector("p").textContent = "불러오는 중...";
@@ -122,7 +166,6 @@
     if (cards.length === 0) {
       el.cardArea.style.display = "none";
       el.quizControls.style.display = "none";
-      el.navControls.style.display = "none";
       el.emptyState.style.display = "block";
       el.emptyState.querySelector(".empty-icon").textContent = "📖";
       el.emptyState.querySelector("p").textContent = "카드가 없습니다";
@@ -133,7 +176,6 @@
 
     el.cardArea.style.display = "block";
     el.quizControls.style.display = "flex";
-    el.navControls.style.display = "flex";
     el.emptyState.style.display = "none";
 
     const card = cards[currentIndex];
@@ -149,8 +191,12 @@
     el.cardCount.innerHTML =
       `<span>${currentIndex + 1}</span> / ${cards.length}`;
 
+    const cardKey = isHanja ? card.hanja : card.idiom;
+    const count = reviewCounts[cardKey] || 0;
+    el.cardBadge.style.display = count > 0 ? "block" : "none";
+    el.cardBadge.textContent = count > 0 ? `다시 보기 ×${count}` : "";
+
     resetFlip();
-    updateNavButtons();
   }
 
   function resetFlip() {
@@ -164,25 +210,12 @@
     el.cardContainer.classList.toggle("flipped");
   }
 
-  function nextCard() {
-    if (cards.length === 0) return;
-    currentIndex = (currentIndex + 1) % cards.length;
-    showCard();
-  }
-
-  function prevCard() {
-    if (cards.length === 0) return;
-    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-    showCard();
-  }
-
-  function updateNavButtons() {
-    el.prevBtn.disabled = cards.length <= 1;
-    el.nextBtn.disabled = cards.length <= 1;
-  }
-
   function markKnown() {
     if (cards.length === 0) return;
+    const cardKey = currentMode === "hanja"
+      ? cards[currentIndex].hanja
+      : cards[currentIndex].idiom;
+    delete reviewCounts[cardKey];
     cards.splice(currentIndex, 1);
     if (currentIndex >= cards.length) currentIndex = 0;
     saveData(currentMode, cards);
@@ -192,13 +225,18 @@
 
   function markUnknown() {
     if (cards.length === 0) return;
-    nextCard();
+    const card = cards[currentIndex];
+    const cardKey = currentMode === "hanja" ? card.hanja : card.idiom;
+    reviewCounts[cardKey] = (reviewCounts[cardKey] || 0) + 1;
+    currentIndex = (currentIndex + 1) % cards.length;
+    showCard();
   }
 
   async function switchMode(mode) {
     currentMode = mode;
     currentIndex = 0;
     isFlipped = false;
+    reviewCounts = {};
 
     el.tabBtns.forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.mode === mode);
@@ -206,6 +244,7 @@
 
     setLoading();
     cards = await loadData(mode);
+    syncUserCardsFromCurrent(mode);
     showCard();
   }
 
@@ -268,12 +307,18 @@
       return;
     }
 
+    if (isHanja && !/^[\u4E00-\u9FFF]{1}$/.test(mainVal)) {
+      showToast("한자만 입력하세요");
+      return;
+    }
+
     const newCard = isHanja
       ? { hanja: mainVal, reading: readingVal, meaning: meaningVal }
       : { idiom: mainVal, reading: readingVal, meaning: meaningVal };
 
     cards.push(newCard);
     saveData(currentMode, cards);
+    addUserCard(currentMode, newCard);
     currentIndex = cards.length - 1;
     showCard();
     closeModal();
@@ -281,20 +326,51 @@
   }
 
   async function resetData() {
-    if (!confirm("모든 카드를 기본값으로 초기화하시겠습니까?")) return;
-
-    if (currentMode === "hanja") {
-      cards = JSON.parse(JSON.stringify(DEFAULT_HANJA));
-      saveData(currentMode, cards);
-    } else {
-      localStorage.removeItem(STORAGE_KEY_SAJA);
-      cards = await fetchDefaultSaja();
-      saveData(currentMode, cards);
+    const choice = prompt(
+      "초기화 방식을 선택하세요 (1: 취소, 2: 추가분만 남기고 초기화, 3: 전체 초기화)"
+    );
+    if (choice === null || choice === "1" || choice === "") {
+      showToast("초기화 취소됨");
+      return;
     }
 
-    currentIndex = 0;
-    showCard();
-    showToast("기본값으로 초기화되었습니다");
+    if (choice === "2") {
+      const isHanja = currentMode === "hanja";
+      const defaults = isHanja
+        ? JSON.parse(JSON.stringify(DEFAULT_HANJA))
+        : await fetchDefaultSaja();
+
+      const userAdded = getUserCards(currentMode);
+
+      cards = defaults.concat(userAdded);
+      saveData(currentMode, cards);
+      currentIndex = 0;
+      reviewCounts = {};
+      showCard();
+      showToast("추가분만 남기고 초기화됨");
+      return;
+    }
+
+    if (choice === "3") {
+      const isHanja = currentMode === "hanja";
+      if (isHanja) {
+        cards = JSON.parse(JSON.stringify(DEFAULT_HANJA));
+        saveData(currentMode, cards);
+      } else {
+        localStorage.removeItem(STORAGE_KEY_SAJA);
+        cards = await fetchDefaultSaja();
+        saveData(currentMode, cards);
+      }
+
+      saveUserCards(currentMode, []);
+      currentIndex = 0;
+      reviewCounts = {};
+      showCard();
+      showToast("전체 초기화되었습니다");
+      return;
+    }
+
+    showToast("잘못된 선택입니다. 취소됨");
   }
 
   el.tabBtns.forEach((btn) => {
@@ -304,8 +380,6 @@
   el.cardArea.addEventListener("click", flipCard);
   el.oBtn.addEventListener("click", markKnown);
   el.xBtn.addEventListener("click", markUnknown);
-  el.prevBtn.addEventListener("click", prevCard);
-  el.nextBtn.addEventListener("click", nextCard);
   el.addBtn.addEventListener("click", openAddModal);
   el.resetBtn.addEventListener("click", resetData);
   el.modalConfirm.addEventListener("click", confirmAdd);
@@ -326,12 +400,6 @@
       case " ":
         e.preventDefault();
         flipCard();
-        break;
-      case "ArrowLeft":
-        prevCard();
-        break;
-      case "ArrowRight":
-        nextCard();
         break;
       case "o":
       case "O":

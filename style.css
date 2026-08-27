@@ -231,6 +231,22 @@ main {
   transition: transform 0.3s ease;
 }
 
+.card-front .card-badge {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--cinnabar);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px var(--shadow);
+  z-index: 2;
+}
+
 .card-area:hover .card-main-text {
   transform: scale(1.02);
 }
@@ -313,48 +329,6 @@ main {
 .quiz-btn.x-btn:hover {
   background: var(--mist-light);
   transform: translateY(-1px);
-}
-
-/* ── Nav Controls ── */
-
-.nav-controls {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.nav-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid var(--mist);
-  background: var(--paper);
-  color: var(--ink-faint);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.nav-btn:hover {
-  border-color: var(--cinnabar);
-  color: var(--cinnabar);
-}
-
-.nav-btn:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
-}
-
-.page-indicator {
-  font-size: 13px;
-  color: var(--ink-faint);
-  min-width: 50px;
-  text-align: center;
-  font-family: 'Noto Serif KR', serif;
 }
 
 /* ── Empty State ── */
@@ -499,6 +473,26 @@ main {
 .modal-btn.cancel:hover {
   background: var(--mist-light);
   color: var(--ink-soft);
+}
+
+/* ── Footer ── */
+
+.app-footer {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 14px 20px 22px;
+  font-size: 12px;
+}
+
+.foot-link {
+  color: var(--ink-faint);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.foot-link:hover {
+  color: var(--cinnabar);
 }
 
 /* ── Toast ── */
