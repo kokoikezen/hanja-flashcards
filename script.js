@@ -5,6 +5,7 @@
 
   const USER_KEY_HANJA = "user_hanja";
   const USER_KEY_SAJA = "user_saja";
+  const STORAGE_KEY_SHUFFLE = "shuffle_mode";
 
   const OLD_DEFAULT_SAJA_IDIOMS = [
     "有備無患", "一日三秋", "臥薪嘗膽", "水落石出", "刻舟求劍", "虎頭蛇尾",
@@ -17,6 +18,7 @@
   let isFlipped = false;
   let cards = [];
   let reviewCounts = {};
+  let shuffleMode = localStorage.getItem(STORAGE_KEY_SHUFFLE) === "true";
 
   const $ = (sel) => document.querySelector(sel);
   const $$ = (sel) => document.querySelectorAll(sel);
@@ -43,6 +45,10 @@
     modalConfirm: $("#modalConfirm"),
     modalCancel: $("#modalCancel"),
     toast: $("#toast"),
+    menuBtn: $("#menuBtn"),
+    dropdownMenu: $("#dropdownMenu"),
+    shuffleToggle: $("#shuffleToggle"),
+    shuffleLabel: $("#shuffleLabel"),
   };
 
   async function fetchDefaultSaja() {
@@ -146,6 +152,26 @@
     return a;
   }
 
+  function updateShuffleLabel() {
+    el.shuffleLabel.textContent = shuffleMode ? "무작위" : "순서대로";
+  }
+
+  function toggleShuffle() {
+    shuffleMode = !shuffleMode;
+    localStorage.setItem(STORAGE_KEY_SHUFFLE, shuffleMode);
+    updateShuffleLabel();
+    switchMode(currentMode);
+    showToast(shuffleMode ? "무작위 순서로 변경" : "순서대로 변경");
+  }
+
+  function toggleMenu() {
+    el.dropdownMenu.classList.toggle("open");
+  }
+
+  function closeMenu() {
+    el.dropdownMenu.classList.remove("open");
+  }
+
   function showToast(msg) {
     el.toast.textContent = msg;
     el.toast.classList.add("show");
@@ -244,6 +270,7 @@
 
     setLoading();
     cards = await loadData(mode);
+    if (shuffleMode) cards = shuffleArray(cards);
     syncUserCardsFromCurrent(mode);
     showCard();
   }
@@ -343,6 +370,7 @@
       const userAdded = getUserCards(currentMode);
 
       cards = defaults.concat(userAdded);
+      if (shuffleMode) cards = shuffleArray(cards);
       saveData(currentMode, cards);
       currentIndex = 0;
       reviewCounts = {};
@@ -355,10 +383,12 @@
       const isHanja = currentMode === "hanja";
       if (isHanja) {
         cards = JSON.parse(JSON.stringify(DEFAULT_HANJA));
+        if (shuffleMode) cards = shuffleArray(cards);
         saveData(currentMode, cards);
       } else {
         localStorage.removeItem(STORAGE_KEY_SAJA);
         cards = await fetchDefaultSaja();
+        if (shuffleMode) cards = shuffleArray(cards);
         saveData(currentMode, cards);
       }
 
@@ -387,6 +417,22 @@
 
   el.modalOverlay.addEventListener("click", (e) => {
     if (e.target === el.modalOverlay) closeModal();
+  });
+
+  el.menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  el.shuffleToggle.addEventListener("click", () => {
+    toggleShuffle();
+    closeMenu();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!el.menuBtn.contains(e.target) && !el.dropdownMenu.contains(e.target)) {
+      closeMenu();
+    }
   });
 
   document.addEventListener("keydown", (e) => {
