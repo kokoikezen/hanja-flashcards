@@ -9,7 +9,7 @@ const DEFAULT_HANJA = [
   { hanja: "高", reading: "고", meaning: "높을 고" },
   { hanja: "鼓", reading: "고", meaning: "북 고" },
   { hanja: "谷", reading: "곡", meaning: "골짜기 곡" },
-  { hanja: "骨", reading: "골", meaning: "뼈 골" },
+  { hanja: "骨", reading: "골", meaning: "뼈 골" }, 
   { hanja: "工", reading: "공", meaning: "장인 공" },
   { hanja: "口", reading: "구", meaning: "입 구" },
   { hanja: "龜", reading: "구", meaning: "거북 구" },
