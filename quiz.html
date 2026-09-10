@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>한문 시험 - 한문 플래시카드</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&family=Noto+Serif+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header>
+    <div class="quiz-header-row">
+      <a class="back-link" href="index.html" title="메인으로">← 메인으로</a>
+      <h1 class="quiz-title">漢文 시험</h1>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-mode="hanja">한자</button>
+      <button class="tab-btn" data-mode="saja">사자성어</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="status-bar">
+      <div class="card-count" id="scoreCount"></div>
+    </div>
+
+    <div class="quiz-area" id="quizArea">
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-question" id="quizQuestion"></div>
+      </div>
+
+      <form class="quiz-form" id="quizForm">
+        <div class="form-group">
+          <label>뜻</label>
+          <input type="text" id="inputMeaningAnswer" placeholder="뜻을 입력하세요" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>음</label>
+          <input type="text" id="inputReadingAnswer" placeholder="음을 입력하세요" autocomplete="off">
+        </div>
+        <button type="submit" class="quiz-submit-btn" id="submitBtn">채점하기</button>
+      </form>
+
+      <div class="quiz-result" id="quizResult" style="display:none;">
+        <div class="result-badge" id="resultBadge"></div>
+        <div class="result-answer" id="resultAnswer"></div>
+        <button type="button" class="quiz-next-btn" id="nextBtn">다음 문제 →</button>
+      </div>
+    </div>
+
+    <div class="empty-state" id="quizEmptyState" style="display:none;">
+      <div class="empty-icon">📖</div>
+      <p>등록된 단어가 없습니다</p>
+      <div class="sub">메인 화면에서 단어를 추가해주세요</div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="data.js"></script>
+  <script src="storage.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>

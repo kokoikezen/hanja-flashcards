@@ -1,17 +1,5 @@
 (() => {
-  const STORAGE_KEY_HANJA = "hanja_cards";
-  const STORAGE_KEY_SAJA = "saja_cards_v2";
-  const OLD_STORAGE_KEY_SAJA = "saja_cards";
-
-  const USER_KEY_HANJA = "user_hanja";
-  const USER_KEY_SAJA = "user_saja";
   const STORAGE_KEY_SHUFFLE = "shuffle_mode";
-
-  const OLD_DEFAULT_SAJA_IDIOMS = [
-    "有備無患", "一日三秋", "臥薪嘗膽", "水落石出", "刻舟求劍", "虎頭蛇尾",
-    "寒心之感", "難中有愛", "塵裏金瓶", "夢中之夢", "竹馬之友", "事必歸正",
-    "不屈不撓", "任重道遠", "一石二鳥"
-  ];
 
   let currentMode = "hanja";
   let currentIndex = 0;
@@ -51,97 +39,15 @@
     shuffleLabel: $("#shuffleLabel"),
   };
 
-  async function fetchDefaultSaja() {
-    try {
-      const res = await fetch("hanmun.json");
-      if (!res.ok) throw new Error("fetch failed");
-      const data = await res.json();
-      return data.map((item) => ({
-        idiom: item.hanja,
-        reading: item.hangul,
-        meaning: item.meaning,
-      }));
-    } catch {
-      return JSON.parse(JSON.stringify(DEFAULT_SAJA));
-    }
-  }
-
-  function migrateOldSaja(userCards) {
-    return userCards.filter((c) => !OLD_DEFAULT_SAJA_IDIOMS.includes(c.idiom));
-  }
-
-  async function loadData(mode) {
-    const key = mode === "hanja" ? STORAGE_KEY_HANJA : STORAGE_KEY_SAJA;
-    const stored = localStorage.getItem(key);
-    if (stored) return JSON.parse(stored);
-
-    if (mode === "hanja") {
-      const defaults = JSON.parse(JSON.stringify(DEFAULT_HANJA));
-      localStorage.setItem(key, JSON.stringify(defaults));
-      return defaults;
-    }
-
-    const base = await fetchDefaultSaja();
-
-    let userAdded = [];
-    const oldStored = localStorage.getItem(OLD_STORAGE_KEY_SAJA);
-    if (oldStored) {
-      userAdded = migrateOldSaja(JSON.parse(oldStored));
-    }
-
-    const defaults = base.concat(userAdded);
-    localStorage.setItem(key, JSON.stringify(defaults));
-    return defaults;
-  }
-
-  function saveData(mode, data) {
-    const key = mode === "hanja" ? STORAGE_KEY_HANJA : STORAGE_KEY_SAJA;
-    localStorage.setItem(key, JSON.stringify(data));
-  }
-
-  function getUserCards(mode) {
-    const key = mode === "hanja" ? USER_KEY_HANJA : USER_KEY_SAJA;
-    const stored = localStorage.getItem(key);
-    return stored ? JSON.parse(stored) : [];
-  }
-
-  function saveUserCards(mode, data) {
-    const key = mode === "hanja" ? USER_KEY_HANJA : USER_KEY_SAJA;
-    localStorage.setItem(key, JSON.stringify(data));
-  }
-
-  function addUserCard(mode, card) {
-    const list = getUserCards(mode);
-    const key = mode === "hanja" ? card.hanja : card.idiom;
-    if (!list.some((c) => (mode === "hanja" ? c.hanja : c.idiom) === key)) {
-      list.push(card);
-      saveUserCards(mode, list);
-    }
-  }
-
-  function syncUserCardsFromCurrent(mode) {
-    const isHanja = mode === "hanja";
-    const defaults = new Set(
-      isHanja
-        ? DEFAULT_HANJA.map((c) => c.hanja)
-        : DEFAULT_SAJA.map((c) => c.idiom)
-    );
-
-    const userList = getUserCards(mode);
-    const userKeys = new Set(
-      userList.map((c) => (isHanja ? c.hanja : c.idiom))
-    );
-
-    cards.forEach((c) => {
-      const key = isHanja ? c.hanja : c.idiom;
-      if (!defaults.has(key) && !userKeys.has(key)) {
-        userList.push(c);
-        userKeys.add(key);
-      }
-    });
-
-    saveUserCards(mode, userList);
-  }
+  const {
+    loadData,
+    saveData,
+    getUserCards,
+    saveUserCards,
+    addUserCard,
+    syncUserCardsFromCurrent,
+    fetchDefaultSaja,
+  } = CardStorage;
 
   function shuffleArray(arr) {
     const a = [...arr];
@@ -271,7 +177,7 @@
     setLoading();
     cards = await loadData(mode);
     if (shuffleMode) cards = shuffleArray(cards);
-    syncUserCardsFromCurrent(mode);
+    syncUserCardsFromCurrent(mode, cards);
     showCard();
   }
 
@@ -286,12 +192,12 @@
           <input type="text" id="inputMain" maxlength="1" placeholder="예: 學">
         </div>
         <div class="form-group">
-          <label>읽기 (한국어 발음)</label>
+          <label>읽기 (한국어 발음, 여러 개면 / 로 구분)</label>
           <input type="text" id="inputReading" placeholder="예: 학">
         </div>
         <div class="form-group">
-          <label>뜻</label>
-          <input type="text" id="inputMeaning" placeholder="예: 배울 학">
+          <label>뜻 (여러 개면 / 로 구분)</label>
+          <input type="text" id="inputMeaning" placeholder="예: 배울 학 / 익힐 학">
         </div>
       `;
     } else {
@@ -301,11 +207,11 @@
           <input type="text" id="inputMain" maxlength="4" placeholder="예: 有備無患">
         </div>
         <div class="form-group">
-          <label>읽기 (한국어 발음)</label>
+          <label>읽기 (한국어 발음, 여러 개면 / 로 구분)</label>
           <input type="text" id="inputReading" placeholder="예: 유비무환">
         </div>
         <div class="form-group">
-          <label>뜻</label>
+          <label>뜻 (여러 개면 / 로 구분)</label>
           <input type="text" id="inputMeaning" placeholder="예: 미리 준비하면 화가 없다">
         </div>
       `;
@@ -386,7 +292,7 @@
         if (shuffleMode) cards = shuffleArray(cards);
         saveData(currentMode, cards);
       } else {
-        localStorage.removeItem(STORAGE_KEY_SAJA);
+        localStorage.removeItem(CardStorage.STORAGE_KEY_SAJA);
         cards = await fetchDefaultSaja();
         if (shuffleMode) cards = shuffleArray(cards);
         saveData(currentMode, cards);
