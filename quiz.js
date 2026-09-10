@@ -1,6 +1,7 @@
 (() => {
   let currentMode = "hanja";
   let pool = [];
+  let queue = [];
   let currentCard = null;
   let answered = false;
   let stats = { correct: 0, total: 0 };
@@ -36,10 +37,28 @@
       : "";
   }
 
-  function pickRandomCard() {
+  function shuffleArray(arr) {
+    const result = arr.slice();
+    for (let i = result.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [result[i], result[j]] = [result[j], result[i]];
+    }
+    return result;
+  }
+
+  function pickNextCard() {
     if (pool.length === 0) return null;
-    const idx = Math.floor(Math.random() * pool.length);
-    return pool[idx];
+
+    if (queue.length === 0) {
+      queue = shuffleArray(pool);
+      // 방금 나온 문제가 새 회차의 맨 앞에 바로 다시 나오지 않도록 조정
+      if (queue.length > 1 && queue[0] === currentCard) {
+        [queue[0], queue[1]] = [queue[1], queue[0]];
+      }
+      if (currentCard) showToast("모든 문제를 다 풀었어요! 다시 섞어서 출제합니다");
+    }
+
+    return queue.shift();
   }
 
   function getMainText(card) {
@@ -47,7 +66,7 @@
   }
 
   function renderQuestion() {
-    currentCard = pickRandomCard();
+    currentCard = pickNextCard();
     answered = false;
     el.quizResult.style.display = "none";
     el.quizForm.style.display = "flex";
@@ -79,7 +98,12 @@
       btn.classList.toggle("active", btn.dataset.mode === mode);
     });
 
+    el.inputMeaning.placeholder =
+      mode === "hanja" ? "뜻을 입력하세요" : "뜻을 입력하세요 (선택, 채점 안 함)";
+
     pool = await CardStorage.loadData(mode);
+    queue = shuffleArray(pool);
+    currentCard = null;
 
     if (pool.length === 0) {
       showEmpty();
@@ -98,7 +122,8 @@
     const result = CardStorage.gradeAnswer(
       currentCard,
       el.inputMeaning.value,
-      el.inputReading.value
+      el.inputReading.value,
+      { requireMeaning: currentMode === "hanja" }
     );
 
     stats.total++;

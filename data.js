@@ -12,7 +12,7 @@ const DEFAULT_HANJA = [
   { hanja: "骨", reading: "골", meaning: "뼈 골" }, 
   { hanja: "工", reading: "공", meaning: "장인 공" },
   { hanja: "口", reading: "구", meaning: "입 구" },
-  { hanja: "龜", reading: "구", meaning: "거북 구" },
+  { hanja: "龜", reading: "구/귀", meaning: "거북 구/거북 귀" },
   { hanja: "弓", reading: "궁", meaning: "활 궁" },
   { hanja: "鬼", reading: "귀", meaning: "귀신 귀" },
   { hanja: "斤", reading: "근", meaning: "도끼 근" },

@@ -171,7 +171,8 @@
     });
   }
 
-  function gradeAnswer(card, userMeaning, userReading) {
+  function gradeAnswer(card, userMeaning, userReading, options = {}) {
+    const { requireMeaning = true } = options;
     const meaningVariants = getMeaningVariants(card);
     const readingVariants = getReadingVariants(card);
 
@@ -179,7 +180,7 @@
     const readingCorrect = matchesAnswer(userReading, readingVariants);
 
     return {
-      correct: meaningCorrect && readingCorrect,
+      correct: requireMeaning ? (meaningCorrect && readingCorrect) : readingCorrect,
       meaningCorrect,
       readingCorrect,
       meaningAnswer: Array.isArray(card.meanings) && card.meanings.length
